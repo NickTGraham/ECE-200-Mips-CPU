@@ -1,6 +1,6 @@
 module regfile (read_address_one, read_address_two, write_address, write_enable, write_data, A, B, clk);
     input [4:0] read_address_one, read_address_two, write_address;
-    input write_enable;
+    input write_enable, clk;
     input [16:0] write_data;
 
     output [15:0] A, B;
@@ -12,7 +12,7 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
 
     wire clk;
 
-    reg [15:0] data[0:15];
+    reg [15:0] data [0:15];
 
     initial begin
         $readmemb ("registers.txt",data);
