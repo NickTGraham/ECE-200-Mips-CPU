@@ -15,7 +15,7 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
     reg [16:0] data[0:16];
 
     initial begin
-        $readmemb ("values.txt",data);
+        $readmemb ("registers.txt",data);
     end
 
     always @(posedge clk )
