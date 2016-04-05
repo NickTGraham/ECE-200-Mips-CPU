@@ -12,7 +12,7 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
 
     wire clk;
 
-    reg [16:0] data[0:16];
+    reg [15:0] data[0:15];
 
     initial begin
         $readmemb ("registers.txt",data);
