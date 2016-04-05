@@ -33,3 +33,38 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
     end
 
 endmodule
+
+module RegTestbench ();
+    reg [4:0] addr_one, addr_two, write_addr;
+    wire [15:0] A, B;
+    reg clk, we;
+    reg [16:0] wd;
+    regfile t(addr_one, addr_two, write_addr, we, wd, A, B, clk);
+    initial begin
+        addr_one <= 4'b0000;
+        addr_two <= 4'b0000;
+        write_addr <= 4'b0000;
+        wd = 8;
+        clk <= 0;
+        we <= 1;
+    end
+
+    always begin
+        #100 clk <= !clk;
+    end
+    always @(posedge clk)
+    begin
+        if(addr_one < 20) begin
+            $monitor ($time, "s %b %b", A, B);
+            addr_one = addr_one + 1;
+            addr_two = addr_two + 1;
+            write_addr = write_addr + 1;
+        end
+        else begin
+            we = 0;
+            addr_one = 4'b0000;
+            addr_two = 4'b0000;
+        end
+
+    end
+endmodule

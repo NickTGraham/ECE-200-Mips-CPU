@@ -29,3 +29,33 @@ module DataMem (address, write_enable, write, read, clk);
     end
 
 endmodule
+
+module DataTestbench ();
+    reg [15:0] addr, read;
+    wire [15:0] write;
+    reg clk, we;
+    DataMem t(addr, we, write, read, clk);
+
+    initial begin
+        addr <= 4'h0000;
+        read <= 2048;
+        clk <= 0;
+        we <= 1;
+    end
+
+    always begin
+        #100 clk <= !clk;
+    end
+    always @(posedge clk)
+    begin
+        if(addr < 20) begin
+            $monitor ($time, "s %b", write);
+            addr = addr + 2;
+        end
+        else begin
+            we = 0;
+            addr = 4'h0000;
+        end
+
+    end
+endmodule

@@ -22,3 +22,24 @@ module InstructionMem (read_address, out, clk);
     end
 
 endmodule
+
+module InstructionTestbench ();
+    reg [4:0] addr;
+    wire [31:0] out;
+    reg clk;
+    InstructionMem t(addr, out, clk);
+
+    initial begin
+        addr <= 4'b0000;
+        clk <= 0;
+    end
+
+    always begin
+        #100 clk <= !clk;
+    end
+    always @(posedge clk)
+    begin
+        $monitor ($time, "s %b", out);
+        addr = addr + 1;
+    end
+endmodule
