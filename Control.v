@@ -49,3 +49,21 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
         end
     end
 endmodule
+
+module ControlTestBench();
+    reg [5:0] OpCode;
+    wire RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+    output[1:0] ALUOp;
+
+    Control t(OpCode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
+    initial begin
+        #10 OpCode <= 6'b000000;
+        #10 OpCode <= 6'b100011;
+        #10 OpCode <= 6'b101011;
+        #10 OpCode <= 6'b000100;
+    end
+
+    always begin
+        $monitor($time, "s RegDst %b, Branch %b, MemRead, MemtoReg %b, MemWrite %b, ALUSrc %b, RegWrite %b, ALUOp %b", RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, ALUOp)
+    end
+endmodule
