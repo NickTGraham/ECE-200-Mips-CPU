@@ -4,6 +4,9 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
     output RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
     output[1:0] ALUOp;
 
+    reg RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+    reg[1:0] ALUOp;
+
     //Type      RegDst  ALUSrc  MemtoReg    RegWrite    MemRead     MemWrite    Branch      ALUOp
     //R-Type    1       0       0           1           0           0           0           10
     //lw        0       1       1           1           1           0           0           00
@@ -12,40 +15,40 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
 
     always @(Opcode) begin
         if(Opcode == 6'b000000) begin //R-Type
-            RegDst = 1;
-            ALUSrc = 0;
-            MemtoReg = 0;
-            RegWrite = 1;
-            MemRead = 0;
-            MemWrite = 0;
-            Branch = 0;
-            ALUOp = 2'b10;
+            RegDst <= 1;
+            ALUSrc <= 0;
+            MemtoReg <= 0;
+            RegWrite <= 1;
+            MemRead <= 0;
+            MemWrite <= 0;
+            Branch <= 0;
+            ALUOp <= 2;
         end
-        if(Opcode == 6'b100011) begin //lw
-            RegDst = 0;
-            ALUSrc = 1;
-            MemtoReg = 1;
-            RegWrite = 1;
-            MemRead = 1;
-            MemWrite = 0;
-            Branch = 0;
-            ALUOp = 2'b00;
+        else if(Opcode == 6'b100011) begin //lw
+            RegDst <= 0;
+            ALUSrc <= 1;
+            MemtoReg <= 1;
+            RegWrite <= 1;
+            MemRead <= 1;
+            MemWrite <= 0;
+            Branch <= 0;
+            ALUOp <= 0;
         end
-        if(Opcode == 6'b101011) begin //sw
-            ALUSrc = 1;
-            RegWrite = 0;
-            MemRead = 0;
-            MemWrite = 1;
-            Branch = 0;
-            ALUOp = 2'b00;
+        else if(Opcode == 6'b101011) begin //sw
+            ALUSrc <= 1;
+            RegWrite <= 0;
+            MemRead <= 0;
+            MemWrite <= 1;
+            Branch <= 0;
+            ALUOp <= 0;
         end
-        if(Opcode == 6'b000100) begin //beq
-            ALUSrc = 0;
-            RegWrite = 0;
-            MemRead = 0;
-            MemWrite = 0;
-            Branch = 1;
-            ALUOp = 2'b01;
+        else if(Opcode == 6'b000100) begin //beq
+            ALUSrc <= 0;
+            RegWrite <= 0;
+            MemRead <= 0;
+            MemWrite <= 0;
+            Branch <= 1;
+            ALUOp <= 1;
         end
     end
 endmodule
@@ -53,7 +56,7 @@ endmodule
 module ControlTestBench();
     reg [5:0] OpCode;
     wire RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-    output[1:0] ALUOp;
+    wire[1:0] ALUOp;
 
     Control t(OpCode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
     initial begin
@@ -63,7 +66,8 @@ module ControlTestBench();
         #10 OpCode <= 6'b000100;
     end
 
-    always begin
-        $monitor($time, "s RegDst %b, Branch %b, MemRead, MemtoReg %b, MemWrite %b, ALUSrc %b, RegWrite %b, ALUOp %b", RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, ALUOp)
+    initial begin
+        #3 $monitor($time, "s RegDst %b, Branch %b, MemRead %b, MemtoReg %b, MemWrite %b, ALUSrc %b, RegWrite %b, ALUOp %h", RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, ALUOp);
     end
+
 endmodule
