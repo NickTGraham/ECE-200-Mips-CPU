@@ -29,7 +29,7 @@ module ALUTestbench ();
     reg [3:0] control;
     wire [15:0] result;
 
-    ALU ok1(.inA(inA), .inB(inB), .control(control);
+    ALU ok1(.inA(inA), .inB(inB), .control(control));
 
     initial
     begin
@@ -75,4 +75,3 @@ module ALUTestbench ();
     $stop;
 end
 endmodule
-
