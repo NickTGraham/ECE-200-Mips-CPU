@@ -19,9 +19,10 @@ module CPU();
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
     ALUControl AC(ALUOp, InstructionWire[5:0], ALUcntrl);
+    pCUpdatePath PCP(PCin, InstructionWire[25:0], ImmediateData, **, **, PCOut);
 
-    always @(negedge clk) begin
-        PCin <= PCin + 4;
+    always @(posedge clk) begin
+        PCin <= PCout;
     end
 endmodule
 
@@ -53,6 +54,20 @@ module mux216(A, B, sel, out);
     input sel;
 
     output [15:0] out;
+
+    always @(A or B or sel) begin
+        if(sel == 0)
+            out<=A;
+        else
+            out<=B;
+    end
+endmodule
+
+module mux232(A, B, sel, out);
+    input [31:0] A, B;
+    input sel;
+
+    output [31:0] out;
 
     always @(A or B or sel) begin
         if(sel == 0)
@@ -99,4 +114,31 @@ module signextend1632(in, out);
         out[16] <= in[15];
         out[15:0] <= in;
     end
-end module;
+endmodule
+
+module pCUpdatePath(PC, JumpAmmount, BranchAmmount, JumpSelect, BranchZero, PCUpdated);
+    input [31:0] PC, BranchAmmount;
+    input [25:0] JumpAmmount;
+    input JumpSelect, BranchZero;
+
+    output [31:0] PCUpdated;
+    reg [31:0] PCUpdated;
+    reg [31:0] PCUpdated;
+
+    reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
+    reg [28:0] JShift;
+
+    wire [31:0] mux1;
+
+    always @(PC or JumpAmmount or BranchAmmount or JumpSelect or BranchZero) begin
+        PCp4 = PC + 4;
+        JAdd [31:28] = PCp4[31:28];
+        JShift = (JumpAmmount << 2);
+        JAdd [28:0] = JShift;
+        BranchShift = BranchAmmount << 2;
+        BranchCalc = BranchAmmount + 4;
+
+        mux232 br(PCp4, BranchCalc, BranchZero, mux1);
+        mux232 jmp(mux1, JAdd, JumpSelect, PCUpdated);
+    end
+endmodule
