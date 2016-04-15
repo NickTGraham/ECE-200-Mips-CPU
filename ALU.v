@@ -3,22 +3,40 @@ module ALU(inA, inB, control, result, overflow);
     input [3:0] control;
     output reg [15:0] result;
     output reg overflow;
+    output reg zero;
 
 always @(inA, inB, control, overflow) begin
     case(control)
-        4'b0000 : result <= inA & inB;
-        4'b0001 : result <= inA | inB;
+        4'b0000 : begin
+                    result <= inA & inB;
+                    zero = 0;
+                  end
+        4'b0001 : begin
+                    result <= inA | inB;
+                    zero = 0;
+                  end
         4'b0010 : begin
                     result = inA + inB;
                     overflow = (inA[15] == inB[15]) ? (result[15] != inA[15]) : 0;
+                    zero = 0;
                   end
         4'b0110 : begin
                     result = inA - inB;
                     overflow = (inA[15] == inB[15]) ? (result[15] != inA[15]) : 0;
+                    zero = !(result[0] or result[1] or result[2] or result[3] or result[4] or result[5] or result[6] or result[7] or result[8] or result[9] or result[10] or result[11] or result[12] or result[13] or result[14] or result[15]);
                   end
-        4'b0111 : result <= inA < inB ? 1:0;
-        4'b1100 : result <= ~(inA | inB);
-        default : result <= 16'bX;
+        4'b0111 : begin
+                    result <= inA < inB ? 1:0;
+                    zero = 0;
+                  end
+        4'b1100 : begin
+                    result <= ~(inA | inB);
+                    zero = 0;
+                  end
+        default : begin
+                    result <= 16'bX;
+                    zero = 0;
+                  end
     endcase
 end
 endmodule
