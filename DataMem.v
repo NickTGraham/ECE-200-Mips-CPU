@@ -1,7 +1,7 @@
-module DataMem (address, write_enable, write, read, clk);
+module DataMem (address, write_enable, read_enable, write, read, clk);
     reg [7:0] data [0:20]; //so no idea how long to really make this, so starting with max
     input [15:0] address, read;
-    input write_enable, clk;
+    input write_enable, read_enable, clk;
     output [15:0] write;
 
 
@@ -21,7 +21,7 @@ module DataMem (address, write_enable, write, read, clk);
             data[address] = read[15:8];
             data[address + 1] = read[7:0];
           end
-        else begin
+        else if (read_enable == 1) begin
             temp[15:8] <= data[address];
             temp[7:0] <= data[address+1];
           end
