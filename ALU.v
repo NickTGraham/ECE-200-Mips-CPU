@@ -23,7 +23,7 @@ always @(inA, inB, control, overflow) begin
         4'b0110 : begin
                     result = inA - inB;
                     overflow = (inA[15] == inB[15]) ? (result[15] != inA[15]) : 0;
-                    zero = !(result[0] or result[1] or result[2] or result[3] or result[4] or result[5] or result[6] or result[7] or result[8] or result[9] or result[10] or result[11] or result[12] or result[13] or result[14] or result[15]);
+                    zero = ~(result[0] | result[1] | result[2] | result[3] | result[4] | result[5] | result[6] | result[7] | result[8] | result[9] | result[10] | result[11] | result[12] | result[13] | result[14] | result[15]);
                   end
         4'b0111 : begin
                     result <= inA < inB ? 1:0;
