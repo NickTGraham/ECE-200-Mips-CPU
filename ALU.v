@@ -1,4 +1,4 @@
-module ALU(inA, inB, control, result, overflow);
+module ALU(inA, inB, control, result, overflow, zero);
     input [15:0] inA, inB;
     input [3:0] control;
     output reg [15:0] result;

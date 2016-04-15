@@ -1,6 +1,6 @@
 module CPU();
 
-    wire clk, RegDst, Branch, MemRead, MemtoReg, MemWrite, RegWrite, overflow;
+    wire clk, RegDst, Branch, MemRead, MemtoReg, MemWrite, RegWrite, overflow, zero, jump;
     wire [1:0] ALUOp;
     wire [3:0] ALUcntrl;
     wire [31:0] InstructionWire, ImmediateData;
@@ -14,12 +14,12 @@ module CPU();
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
     signextend1632 ID(InstructionWire[15:0], ImmediateData);
     mux216 BV(RegB, ImmediateData, ALUSrc, ALUB);
-    ALU Math(ALUA, ALUB, ALUcntrl, ALUResult, overflow);
+    ALU Math(ALUA, ALUB, ALUcntrl, ALUResult, overflow, zero);
     DataMem DM(ALUResult, MemWrite, MemRead, ALUB, ReadData, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
-    Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
+    Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
     ALUControl AC(ALUOp, InstructionWire[5:0], ALUcntrl);
-    pCUpdatePath PCP(PCin, InstructionWire[25:0], ImmediateData, **, **, PCOut);
+    pCUpdatePath PCP(PCin, InstructionWire[25:0], ImmediateData, jump, zero, PCOut);
 
     always @(posedge clk) begin
         PCin <= PCout;
