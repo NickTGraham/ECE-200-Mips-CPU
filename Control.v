@@ -69,10 +69,10 @@ endmodule
 
 module ControlTestBench();
     reg [5:0] OpCode;
-    wire RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+    wire RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, Jump;
     wire[1:0] ALUOp;
 
-    Control t(OpCode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
+    Control t(OpCode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, Jump);
     initial begin
         #10 OpCode <= 6'b000000;
         #10 OpCode <= 6'b100011;

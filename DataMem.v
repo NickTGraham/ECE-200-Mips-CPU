@@ -33,8 +33,8 @@ endmodule
 module DataTestbench ();
     reg [15:0] addr, read;
     wire [15:0] write;
-    reg clk, we;
-    DataMem t(addr, we, write, read, clk);
+    reg clk, we, re;
+    DataMem t(addr, we, re, write, read, clk);
 
     initial begin
         addr <= 4'h0000;

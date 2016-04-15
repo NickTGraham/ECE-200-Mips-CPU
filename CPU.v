@@ -3,27 +3,23 @@ module CPU();
     wire clk, RegDst, Branch, MemRead, MemtoReg, MemWrite, RegWrite, overflow, zero, jump;
     wire [1:0] ALUOp;
     wire [3:0] ALUcntrl;
-    wire [31:0] InstructionWire, ImmediateData;
+    wire [31:0] InstructionWire;
+    wire [15:0] ImmediateData;
     wire [15:0] RegA, RegB, ALUB, ALUA, ALUResult, ReadData, WriteData;
-
-    reg [31:0] PCin, PCout;
+    wire [4:0] write_address;
+    wire [31:0] PCin, PCout;
 
     PC progCount(PCin, PCout, clk);
-    InstructionMem IM(PC, InstructionWire, clk);
+    InstructionMem IM(PCout[4:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
-    signextend1632 ID(InstructionWire[15:0], ImmediateData);
-    mux216 BV(RegB, ImmediateData, ALUSrc, ALUB);
+    mux216 BV(RegB, InstructionWire[15:0], ALUSrc, ALUB);
     ALU Math(ALUA, ALUB, ALUcntrl, ALUResult, overflow, zero);
     DataMem DM(ALUResult, MemWrite, MemRead, ALUB, ReadData, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
     ALUControl AC(ALUOp, InstructionWire[5:0], ALUcntrl);
-    pCUpdatePath PCP(PCin, InstructionWire[25:0], ImmediateData, jump, zero, PCOut);
-
-    always @(posedge clk) begin
-        PCin <= PCout;
-    end
+    pCUpdatePath PCP(PCin, InstructionWire[25:0], ImmediateData, jump, zero, PCout);
 endmodule
 
 module clock(clk);
@@ -39,7 +35,7 @@ module mux25(A, B, sel, out);
     input [4:0] A, B;
     input sel;
 
-    output [4:0] out;
+    output reg [4:0] out;
 
     always @(A or B or sel) begin
         if(sel == 0)
@@ -53,7 +49,7 @@ module mux216(A, B, sel, out);
     input [15:0] A, B;
     input sel;
 
-    output [15:0] out;
+    output reg [15:0] out;
 
     always @(A or B or sel) begin
         if(sel == 0)
@@ -67,7 +63,7 @@ module mux232(A, B, sel, out);
     input [31:0] A, B;
     input sel;
 
-    output [31:0] out;
+    output reg [31:0] out;
 
     always @(A or B or sel) begin
         if(sel == 0)
@@ -117,18 +113,20 @@ module signextend1632(in, out);
 endmodule
 
 module pCUpdatePath(PC, JumpAmmount, BranchAmmount, JumpSelect, BranchZero, PCUpdated);
-    input [31:0] PC, BranchAmmount;
+    input [31:0] PC;
+    input [15:0] BranchAmmount;
     input [25:0] JumpAmmount;
     input JumpSelect, BranchZero;
 
-    output [31:0] PCUpdated;
-    reg [31:0] PCUpdated;
-    reg [31:0] PCUpdated;
+    output wire [31:0] PCUpdated;
 
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
     reg [28:0] JShift;
 
     wire [31:0] mux1;
+
+    mux232 br(PCp4, BranchCalc, BranchZero, mux1);
+    mux232 jmp(mux1, JAdd, JumpSelect, PCUpdated);
 
     always @(PC or JumpAmmount or BranchAmmount or JumpSelect or BranchZero) begin
         PCp4 = PC + 4;
@@ -137,8 +135,5 @@ module pCUpdatePath(PC, JumpAmmount, BranchAmmount, JumpSelect, BranchZero, PCUp
         JAdd [28:0] = JShift;
         BranchShift = BranchAmmount << 2;
         BranchCalc = BranchAmmount + 4;
-
-        mux232 br(PCp4, BranchCalc, BranchZero, mux1);
-        mux232 jmp(mux1, JAdd, JumpSelect, PCUpdated);
     end
 endmodule
