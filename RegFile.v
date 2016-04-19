@@ -21,7 +21,7 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
     always @(posedge clk )
     begin
 
-    tempA <= data[read_address_one];
+    #2 tempA <= data[read_address_one];
     tempB <= data[read_address_two];
 
     end
@@ -29,7 +29,7 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
     always @(negedge clk )
     begin
     if(write_enable == 1)
-        data[write_address] <= write_data;
+        #10 data[write_address] <= write_data;
     end
 
 endmodule

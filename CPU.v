@@ -1,17 +1,18 @@
 module CPU();
 
-    wire clk, RegDst, Branch, MemRead, MemtoReg, MemWrite, RegWrite, overflow, zero, jump;
+    wire clk, RegDst, Branch, MemRead, MemtoReg, MemWrite, RegWrite, overflow, zero, jump, ALUSrc;
     wire [1:0] ALUOp;
     wire [3:0] ALUcntrl;
     wire [31:0] InstructionWire;
     wire [15:0] ImmediateData;
-    wire [15:0] RegA, RegB, ALUB, ALUA, ALUResult, ReadData, WriteData;
+    wire [15:0] RegA, RegB, ALUA, ALUResult, ReadData, WriteData;
     wire [4:0] write_address;
     wire [31:0] PCin, PCout;
 
     reg [31:0] progCountin, progCountout;
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
     reg [28:0] JShift;
+    reg [15:0] ALUB;
 
     initial begin
         progCountin = 0;
@@ -27,7 +28,7 @@ module CPU();
         JAdd [31:28] = progCountout[31:28];
         JShift = (InstructionWire[25:0] << 2);
         JAdd [28:0] = JShift;
-        BranchShift = ImmediateData << 2;
+        BranchShift = InstructionWire[15:0] << 2;
         BranchCalc = BranchShift + 4;
         if(jump) begin
             progCountout = JAdd;
@@ -36,14 +37,26 @@ module CPU();
             progCountout = BranchCalc;
         end
     end
+
+    always @(RegB or InstructionWire or ALUSrc) begin
+        if (ALUSrc == 0) begin
+            ALUB = RegB;
+        end
+        else begin
+            ALUB = InstructionWire[15:0];
+        end
+    end
+    always @(ALUB) begin
+        $display("Alu B %b, time: ", ALUB, $time);
+    end
     clock mclk(clk);
     //PC progCount(PCin, PCout, clk);
     InstructionMem IM(progCountin[4:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
-    mux216 BV(RegB, InstructionWire[15:0], ALUSrc, ALUB);
-    ALU Math(ALUA, ALUB, ALUcntrl, ALUResult, overflow, zero);
-    DataMem DM(ALUResult, MemWrite, MemRead, ALUB, ReadData, clk);
+    //mux216 BV(RegB, InstructionWire[15:0], ALUSrc, ALUB);
+    ALU Math(RegA, ALUB, ALUcntrl, ALUResult, overflow, zero);
+    DataMem DM(ALUResult, MemWrite, MemRead, ReadData, ALUB, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
     ALUControl AC(ALUOp, InstructionWire[5:0], ALUcntrl);
@@ -83,6 +96,7 @@ module mux216(A, B, sel, out);
     output reg [15:0] out;
 
     always @(A or B or sel) begin
+        #10 $display("A %b, B %b, sel %b", A, B, sel);
         if(sel == 0)
             out<=A;
         else

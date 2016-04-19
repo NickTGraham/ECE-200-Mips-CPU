@@ -5,7 +5,7 @@ module ALU(inA, inB, control, result, overflow, zero);
     output reg overflow;
     output reg zero;
 
-always @(inA, inB, control, overflow) begin
+always @(inA, inB, control) begin
     case(control)
         4'b0000 : begin
                     result <= inA & inB;
