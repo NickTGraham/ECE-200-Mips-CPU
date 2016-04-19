@@ -7,7 +7,6 @@ module CPU();
     wire [15:0] ImmediateData;
     wire [15:0] RegA, RegB, ALUA, ALUResult, ReadData, WriteData;
     wire [4:0] write_address;
-    wire [31:0] PCin, PCout;
 
     reg [31:0] progCountin, progCountout;
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
@@ -16,15 +15,16 @@ module CPU();
 
     initial begin
         progCountin = 0;
-        progCountout = 0;
+        progCountout = 1; //this fixes the first instruction running twice, however it assumes the first instruction is not a branch or jump. shoudl find a better way to handle this.
     end
 
     always @(posedge clk) begin
         progCountin <= progCountout;
+        $display("progcount %b", progCountin[4:0], $time);
     end
 
     always @(negedge clk) begin
-        progCountout = progCountin + 4;
+        progCountout = progCountin + 1; //need to change back to 4!!!
         JAdd [31:28] = progCountout[31:28];
         JShift = (InstructionWire[25:0] << 2);
         JAdd [28:0] = JShift;
@@ -50,17 +50,14 @@ module CPU();
         $display("Alu B %b, time: ", ALUB, $time);
     end
     clock mclk(clk);
-    //PC progCount(PCin, PCout, clk);
     InstructionMem IM(progCountin[4:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
-    //mux216 BV(RegB, InstructionWire[15:0], ALUSrc, ALUB);
     ALU Math(RegA, ALUB, ALUcntrl, ALUResult, overflow, zero);
     DataMem DM(ALUResult, MemWrite, MemRead, ReadData, ALUB, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
     ALUControl AC(ALUOp, InstructionWire[5:0], ALUcntrl);
-    //pCUpdatePath PCP(progCountin, InstructionWire[25:0], ImmediateData, jump, zero, PCin, clk);
 
 endmodule
 
