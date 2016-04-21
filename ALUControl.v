@@ -13,7 +13,7 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
         else if (ALUOp == 2'b01) begin
             cntrl <= 4'b0110;
         end
-        else if (ALUOp == 2'b11) begin
+        else if (ALUOp == 2'b11) begin //handle the immediate instructions, since they have no funct and there are too many, using Opcode
             if(Opcode == 6'b001000) begin //addi
                 cntrl <= 4'b0010;
             end
@@ -22,6 +22,9 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
             end
             if(Opcode == 6'b001100) begin //andi
                 cntrl <= 4'b0000;
+            end
+            if(Opcode == 6'b001010) begin //slti
+                cntrl <= 4'b0111;
             end
         end
         else if(funct[3:0] == 4'b0000) begin
@@ -38,6 +41,9 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
         end
         else if(funct[3:0] == 4'b1010) begin
             cntrl <= 4'b0111;
+        end
+        else if(funct[3:0] == 4'b0111) begin
+            cntrl <= 4'b1100;
         end
     end
 
