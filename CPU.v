@@ -55,7 +55,7 @@ module CPU();
     DataMem DM(ALUResult, MemWrite, MemRead, ReadData, ALUB, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
-    ALUControl AC(ALUOp, InstructionWire[5:0], ALUcntrl);
+    ALUControl AC(ALUOp, InstructionWire[5:0], InstructionWire[31:26], ALUcntrl);
 
 endmodule
 

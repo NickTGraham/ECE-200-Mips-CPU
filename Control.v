@@ -13,6 +13,11 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
     //sw        X       1       X           0           0           1           0           00      0
     //beq       X       0       X           0           0           0           1           01      0
     //Jump      X       0       0           0           0           0           0           00      1
+    //addi      1       1       0           1           0           0           0           11      0
+    //andi      1       1       0           1           0           0           0           11      0
+    //ori       1       1       0           1           0           0           0           11      0
+    //slti
+    //lui (its just ori man...)
 
     always @(Opcode) begin
         if(Opcode == 6'b000000) begin //R-Type
@@ -63,6 +68,39 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 0;
             Jump <= 1;
+        end
+        else if(Opcode == 6'b001000) begin //addi
+            RegDst <= 1;
+            ALUSrc <= 1;
+            MemtoReg <= 0;
+            RegWrite <= 1;
+            MemRead <= 0;
+            MemWrite <= 0;
+            Branch <= 0;
+            ALUOp <= 3;
+            Jump <= 0;
+        end
+        else if(Opcode == 6'b001101) begin //ori
+            RegDst <= 1;
+            ALUSrc <= 1;
+            MemtoReg <= 0;
+            RegWrite <= 1;
+            MemRead <= 0;
+            MemWrite <= 0;
+            Branch <= 0;
+            ALUOp <= 3;
+            Jump <= 0;
+        end
+        else if(Opcode == 6'b001100) begin //andi
+            RegDst <= 1;
+            ALUSrc <= 1;
+            MemtoReg <= 0;
+            RegWrite <= 1;
+            MemRead <= 0;
+            MemWrite <= 0;
+            Branch <= 0;
+            ALUOp <= 3;
+            Jump <= 0;
         end
     end
 endmodule
