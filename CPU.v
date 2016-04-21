@@ -20,7 +20,6 @@ module CPU();
 
     always @(posedge clk) begin
         progCountin <= progCountout;
-        $display("progcount %b", progCountin[4:0], $time);
     end
 
     always @(negedge clk) begin
@@ -36,6 +35,7 @@ module CPU();
         if(zero & Branch) begin
             progCountout = BranchCalc;
         end
+        $display("PC %b, instruction %b, next PC %b, ALU Result %b", progCountin[4:0], InstructionWire, progCountout[4:0], ALUResult, $time);
     end
 
     always @(RegB or InstructionWire or ALUSrc) begin
@@ -46,9 +46,7 @@ module CPU();
             ALUB = InstructionWire[15:0];
         end
     end
-    always @(ALUB) begin
-        $display("Alu B %b, time: ", ALUB, $time);
-    end
+
     clock mclk(clk);
     InstructionMem IM(progCountin[4:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
@@ -93,7 +91,6 @@ module mux216(A, B, sel, out);
     output reg [15:0] out;
 
     always @(A or B or sel) begin
-        #10 $display("A %b, B %b, sel %b", A, B, sel);
         if(sel == 0)
             out<=A;
         else

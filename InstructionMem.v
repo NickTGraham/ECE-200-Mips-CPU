@@ -11,7 +11,7 @@ module InstructionMem (read_address, out, clk);
     assign out = temp;
 
     initial begin
-        $readmemb ("instructions.txt",instructions);
+        $readmemb ("testbenchinstructions.txt",instructions);
     end
 
     always @(posedge clk )
