@@ -15,7 +15,7 @@ module DataMem (address, write_enable, read_enable, write, read, clk);
         $readmemb ("./data.txt",data);
     end
 
-    always @(posedge clk )
+    always @(negedge clk )
     begin
         if(write_enable == 1) begin
             data[address] = read[15:8];
