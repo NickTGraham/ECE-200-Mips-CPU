@@ -1,7 +1,7 @@
 module CPU();
 
-    wire clk, RegDst, Branch, MemRead, MemtoReg, MemWrite, RegWrite, overflow, zero, jump, ALUSrc;
-    wire [1:0] ALUOp;
+    wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc;
+    wire [1:0] ALUOp, MemRead, MemWrite;
     wire [3:0] ALUcntrl;
     wire [31:0] InstructionWire;
     wire [15:0] ImmediateData;

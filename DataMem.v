@@ -1,9 +1,12 @@
 module DataMem (address, write_enable, read_enable, write, read, clk);
     reg [7:0] data [0:20]; //so no idea how long to really make this, so starting with max
     input [15:0] address, read;
-    input write_enable, read_enable, clk;
+    input [1:0] write_enable, read_enable;
+    input clk;
     output [15:0] write;
 
+    //              Half        byte        no
+    //w/r enable    01          10          00
 
     wire clk;
     wire [15:0] write;
@@ -20,11 +23,18 @@ module DataMem (address, write_enable, read_enable, write, read, clk);
         if(write_enable == 1) begin
             data[address] = read[15:8];
             data[address + 1] = read[7:0];
-          end
+        end
         else if (read_enable == 1) begin
             temp[15:8] <= data[address];
             temp[7:0] <= data[address+1];
-          end
+        end
+        if(write_enable == 2) begin
+            data[address] = read[7:0]; //I do not pad the memory with zero's, not 100% sure on that.
+        end
+        else if (read_enable == 2) begin
+            temp[15:8] <= 0;
+            temp[7:0] <= data[address];
+        end
 
     end
 

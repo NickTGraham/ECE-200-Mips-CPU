@@ -4,8 +4,8 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
     output RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, Jump;
     output[1:0] ALUOp;
 
-    reg RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, Jump;
-    reg[1:0] ALUOp;
+    reg RegDst, Branch, MemtoReg, ALUSrc, RegWrite, Jump;
+    reg[1:0] ALUOp, MemRead, MemWrite;
 
     //Type      RegDst  ALUSrc  MemtoReg    RegWrite    MemRead     MemWrite    Branch      ALUOp   Jump
     //R-Type    1       0       0           1           0           0           0           10      0
@@ -118,7 +118,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             ALUSrc <= 1;
             MemtoReg <= 1;
             RegWrite <= 1;
-            MemRead <= 1;
+            MemRead <= 2;
             MemWrite <= 0;
             Branch <= 0;
             ALUOp <= 00;
@@ -141,7 +141,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             MemtoReg <= 0;
             RegWrite <= 0;
             MemRead <= 0;
-            MemWrite <= 1;
+            MemWrite <= 2;
             Branch <= 0;
             ALUOp <= 00;
             Jump <= 0;
