@@ -29,7 +29,7 @@ module regfile (read_address_one, read_address_two, write_address, write_enable,
     always @(negedge clk )
     begin
     if(write_enable == 1)
-        #10 data[write_address] <= write_data;
+        #50 data[write_address] <= write_data;
     end
 
 endmodule

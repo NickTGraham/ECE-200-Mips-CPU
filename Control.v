@@ -135,6 +135,28 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             ALUOp <= 00;
             Jump <= 0;
         end
+        else if(Opcode == 6'b101000) begin //sb
+            RegDst <= 0;
+            ALUSrc <= 1;
+            MemtoReg <= 0;
+            RegWrite <= 0;
+            MemRead <= 0;
+            MemWrite <= 1;
+            Branch <= 0;
+            ALUOp <= 00;
+            Jump <= 0;
+        end
+        else if(Opcode == 6'b101001) begin //sh
+            RegDst <= 0;
+            ALUSrc <= 1;
+            MemtoReg <= 0;
+            RegWrite <= 0;
+            MemRead <= 0;
+            MemWrite <= 1;
+            Branch <= 0;
+            ALUOp <= 00;
+            Jump <= 0;
+        end
     end
 endmodule
 
