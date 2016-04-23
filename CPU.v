@@ -18,7 +18,7 @@ module CPU();
     initial begin
         i = 0;
         progCountin = 0;
-        progCountout = 1; //this fixes the first instruction running twice, however it assumes the first instruction is not a branch or jump. shoudl find a better way to handle this.
+        progCountout = 0; 
     end
 
     always @(posedge clk) begin
