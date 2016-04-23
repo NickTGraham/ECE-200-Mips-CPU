@@ -33,6 +33,10 @@ always @(inA, inB, control) begin
                     result <= ~(inA | inB);
                     zero = 0;
                   end
+        4'b1111 : begin
+                  result <= (inA > 0);
+                  zero = ~(inA > 0);
+                  end
         default : begin
                     result <= 16'bX;
                     zero = 0;

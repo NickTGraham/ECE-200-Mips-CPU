@@ -26,6 +26,9 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
             if(Opcode == 6'b001010) begin //slti
                 cntrl <= 4'b0111;
             end
+            if(Opcode == 6'b000001) begin //slti
+                cntrl <= 4'b1111;
+            end
         end
         else if(funct[3:0] == 4'b0000) begin
             cntrl <= 4'b0010;

@@ -22,24 +22,28 @@ module CPU();
     end
 
     always @(posedge clk) begin
-        progCountin <= progCountout;
+        $display("Clock");
+
     end
 
     always @(negedge clk) begin
-        i = i + 1;
+        #5 i = i + 1;
         progCountout = progCountin + 1; //need to change back to 4!!!
         JAdd [31:28] = progCountout[31:28];
-        JShift = (InstructionWire[25:0] << 2);
+        JShift = (InstructionWire[25:0] << 0); //need to change back to 2
         JAdd [28:0] = JShift;
-        BranchShift = InstructionWire[15:0] << 2;
-        BranchCalc = BranchShift + 4;
+        BranchShift = InstructionWire[15:0] << 0; //need to change back to 0
+        BranchCalc = BranchShift + progCountout;
         if(jump) begin
+            $display("jump");
             progCountout = JAdd;
         end
         if(zero & Branch) begin
+            $display("Branch");
             progCountout = BranchCalc;
         end
-        $display("PC %b, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[4:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
+        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[4:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
+        #5 progCountin <= progCountout;
     end
 
     always @(RegB or InstructionWire or ALUSrc) begin
