@@ -2,7 +2,7 @@ module CPU_ls();
 
     wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc;
     wire [1:0] ALUOp, MemRead, MemWrite;
-    wire [3:0] ALUcntrl;
+    wire [4:0] ALUcntrl;
     wire [31:0] InstructionWire;
     wire [15:0] ImmediateData;
     wire [15:0] RegA, RegB, ALUA, ALUResult, ReadData, WriteData;
