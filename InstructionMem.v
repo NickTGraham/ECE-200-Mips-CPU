@@ -1,6 +1,6 @@
 module InstructionMem (read_address, out, clk);
-    reg [31:0] instructions [0:31]; //so no idea how long to really make this, so starting with 32 instructions
-    input [4:0] read_address;
+    reg [7:0] instructions [0:50]; //so no idea how long to really make this, so starting with 32 instructions
+    input [5:0] read_address;
     output [31:0] out;
     input clk;
 
@@ -17,20 +17,23 @@ module InstructionMem (read_address, out, clk);
     always @(posedge clk )
     begin
 
-    temp <= instructions[read_address];
+    temp[31:24] <= instructions[read_address];
+    temp[23:16] <= instructions[read_address + 1];
+    temp[15:8] <= instructions[read_address + 2];
+    temp[7:0] <= instructions[read_address + 3];
 
     end
 
 endmodule
 
 module InstructionTestbench ();
-    reg [4:0] addr;
+    reg [5:0] addr;
     wire [31:0] out;
     reg clk;
     InstructionMem t(addr, out, clk);
 
     initial begin
-        addr <= 4'b0000;
+        addr <= 5'b0000;
         clk <= 0;
     end
 

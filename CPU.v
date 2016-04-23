@@ -18,7 +18,7 @@ module CPU();
     initial begin
         i = 0;
         progCountin = 0;
-        progCountout = 0; 
+        progCountout = 0;
     end
 
     always @(posedge clk) begin
@@ -28,21 +28,19 @@ module CPU();
 
     always @(negedge clk) begin
         #5 i = i + 1;
-        progCountout = progCountin + 1; //need to change back to 4!!!
+        progCountout = progCountin + 4; //need to change back to 4!!!
         JAdd [31:28] = progCountout[31:28];
-        JShift = (InstructionWire[25:0] << 0); //need to change back to 2
+        JShift = (InstructionWire[25:0] << 2); //need to change back to 2
         JAdd [28:0] = JShift;
-        BranchShift = InstructionWire[15:0] << 0; //need to change back to 0
+        BranchShift = InstructionWire[15:0] << 2; //need to change back to 0
         BranchCalc = BranchShift + progCountout;
         if(jump) begin
-            $display("jump");
             progCountout = JAdd;
         end
         if(zero & Branch) begin
-            $display("Branch");
             progCountout = BranchCalc;
         end
-        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[4:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
+        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
         #5 progCountin <= progCountout;
     end
 
@@ -56,7 +54,7 @@ module CPU();
     end
 
     clock mclk(clk);
-    InstructionMem IM(progCountin[4:0], InstructionWire, clk);
+    InstructionMem IM(progCountin[5:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
     ALU Math(RegA, ALUB, ALUcntrl, ALUResult, overflow, zero);
