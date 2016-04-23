@@ -1,4 +1,4 @@
-module CPU();
+module CPU_ls();
 
     wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc;
     wire [1:0] ALUOp, MemRead, MemWrite;
@@ -49,7 +49,7 @@ module CPU();
     end
 
     clock mclk(clk);
-    InstructionMem IM(progCountin[5:0], InstructionWire, clk);
+    InstructionMem_ls IM(progCountin[5:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
     ALU Math(RegA, ALUB, ALUcntrl, ALUResult, overflow, zero);
