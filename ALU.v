@@ -1,9 +1,12 @@
-module ALU(inA, inB, control, result, overflow, zero);
+module ALU(inA, inB, control, shamt, result, Hi, Lo, overflow, zero);
     input [15:0] inA, inB;
     input [4:0] control;
+    input [4:0] shamt;
     output reg [15:0] result;
+    output reg [15:0] Hi, Lo ;
     output reg overflow;
     output reg zero;
+    reg temp [31:0];
 
 always @(inA, inB, control) begin
     case(control)
@@ -38,7 +41,33 @@ always @(inA, inB, control) begin
                   zero = ~(inA > 0);
                   end
         5'b10000 : begin
-                  result <= inA * inB
+                  temp <= inA * inB;
+                  result = 0;
+                  HiLo[0] = temp[31:16];
+                  HiLo[1] = temp[15:0];
+                  zero = 0;
+                  end
+        5'b11010 : begin
+                  temp <= inA/inB;
+                  result = 0;
+                  HiLo[0] = temp[31:16];
+                  HiLo[1] = temp[15:0];
+                  zero = 0;
+                  end
+        5'b10000 : begin //High
+                  result = HiLo[0];
+                  zero = 0;
+                  end
+        5'b10010 : begin //Low
+                  result = HiLo[1];
+                  zero = 0;
+                  end
+        5'b00000 : begin //Low
+                  result = inB << shamt;
+                  zero = 0;
+                  end
+        5'b00010 : begin //Low
+                  result = inB >> shamt;
                   zero = 0;
                   end
         default : begin

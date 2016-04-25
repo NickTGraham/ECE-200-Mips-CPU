@@ -12,6 +12,7 @@ module CPU();
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
     reg [28:0] JShift;
     reg [15:0] ALUB;
+    reg [15:0] Hi, Lo;
 
     reg [5:0] i;
 
@@ -52,7 +53,7 @@ module CPU();
     InstructionMem IM(progCountin[5:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
-    ALU Math(RegA, ALUB, ALUcntrl, ALUResult, overflow, zero);
+    ALU Math(RegA, ALUB, ALUcntrl, InstructionWire[10:6] ALUResult, Hi, Lo, overflow, zero);
     DataMem DM(ALUResult, MemWrite, MemRead, ReadData, RegB, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
