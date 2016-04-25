@@ -1,6 +1,6 @@
 module CPU();
 
-    wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc, Jal;
+    wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc, Jal, jump2;
     wire [1:0] ALUOp, MemRead, MemWrite;
     wire [4:0] ALUcntrl;
     wire [31:0] InstructionWire;
@@ -12,7 +12,7 @@ module CPU();
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
     reg [28:0] JShift;
     reg [15:0] ALUB;
-    reg [15:0] Hi, Lo, jr;
+    wire [15:0] Hi, Lo, jr;
 
     reg [5:0] i;
 
@@ -52,12 +52,12 @@ module CPU();
     clock mclk(clk);
     InstructionMem IM(progCountin[5:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, tempWA);
-    mux25 wr(tempWA, 4'b1111, Jal, write_address);
+    mux25 wr2(tempWA, 5'b01111, Jal, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
-    ALU Math(RegA, ALUB, ALUcntrl, InstructionWire[10:6] ALUResult, Hi, Lo, jr, overflow, zero);
+    ALU Math(RegA, ALUB, ALUcntrl, InstructionWire[10:6], ALUResult, Hi, Lo, jr, overflow, zero, jump2);
     DataMem DM(ALUResult, MemWrite, MemRead, ReadData, RegB, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, ALUMEM);
-    mux216 RES (ALUMEM, progCountin[15:0], Jal, WriteData);
+    mux216 RES2 (ALUMEM, progCountin[15:0], Jal, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump, Jal);
     ALUControl AC(ALUOp, InstructionWire[5:0], InstructionWire[31:26], ALUcntrl);
 

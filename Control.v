@@ -4,7 +4,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
     output RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, Jump, Jal;
     output[1:0] ALUOp;
 
-    reg RegDst, Branch, MemtoReg, ALUSrc, RegWrite, Jump;
+    reg RegDst, Branch, MemtoReg, ALUSrc, RegWrite, Jump, Jal;
     reg[1:0] ALUOp, MemRead, MemWrite;
 
     //Type      RegDst  ALUSrc  MemtoReg    RegWrite    MemRead     MemWrite    Branch      ALUOp   Jump

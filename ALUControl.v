@@ -4,7 +4,7 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
     input [5:0] Opcode;
     output [4:0] cntrl;
 
-    reg [3:0] cntrl;
+    reg [4:0] cntrl;
 
     always @(ALUOp or funct) begin
         if(ALUOp == 2'b00) begin
@@ -48,8 +48,26 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
         else if(funct == 6'b100111) begin
             cntrl <= 5'b01100;
         end
-        else if(funct == 6'b011010) begin
+        else if(funct == 6'b011000) begin //mul
             cntrl <= 5'b10000;
+        end
+        else if(funct == 6'b011010) begin //div
+            cntrl <= 5'b10001;
+        end
+        else if(funct == 6'b010000) begin //mfi
+            cntrl <= 5'b10010;
+        end
+        else if(funct == 6'b010010) begin //mlo
+            cntrl <= 5'b10011;
+        end
+        else if(funct == 6'b000000) begin //sll
+            cntrl <= 5'b10100;
+        end
+        else if(funct == 6'b000010) begin //srl
+            cntrl <= 5'b10101;
+        end
+        else if(funct == 6'b001000) begin //jr
+            cntrl <= 5'b10111;
         end
     end
 

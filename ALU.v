@@ -1,12 +1,12 @@
 module ALU(inA, inB, control, shamt, result, Hi, Lo, jr, overflow, zero, jump);
-    input [15:0] inA, inB;
+    input signed [15:0] inA, inB;
     input [4:0] control;
     input [4:0] shamt;
     output reg [15:0] result;
-    output reg [15:0] Hi, Lo, jr;
+    output reg signed [15:0] Hi, Lo, jr;
     output reg overflow;
     output reg zero, jump;
-    reg temp [31:0];
+    reg signed [31:0] temp;
 
 always @(inA, inB, control) begin
     case(control)
@@ -41,36 +41,36 @@ always @(inA, inB, control) begin
                   zero = ~(inA > 0);
                   end
         5'b10000 : begin
-                  temp <= inA * inB;
+                  temp = (inA*inB);
                   result = 0;
-                  HiLo[0] = temp[31:16];
-                  HiLo[1] = temp[15:0];
+                  Hi = temp[31:16];
+                  Lo = temp[15:0];
                   zero = 0;
                   end
-        5'b11010 : begin
-                  temp <= inA/inB;
+        5'b10001 : begin
+                  temp = inA/inB;
                   result = 0;
-                  HiLo[0] = temp[31:16];
-                  HiLo[1] = temp[15:0];
+                  Hi = temp[31:16];
+                  Lo = temp[15:0];
                   zero = 0;
                   end
-        5'b10000 : begin //High
-                  result = HiLo[0];
+        5'b10010 : begin //High
+                  result = Hi;
                   zero = 0;
                   end
-        5'b10010 : begin //Low
-                  result = HiLo[1];
+        5'b10011 : begin //Low
+                  result = Lo;
                   zero = 0;
                   end
-        5'b00000 : begin //sll
+        5'b10100 : begin //sll
                   result = inB << shamt;
                   zero = 0;
                   end
-        5'b00010 : begin //srl
+        5'b10101 : begin //srl
                   result = inB >> shamt;
                   zero = 0;
                   end
-        5'b01000 : begin //jr
+        5'b10111 : begin //jr
                   result = 0;
                   zero = 0;
                   jump = 1;
