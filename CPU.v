@@ -36,7 +36,11 @@ module CPU();
         if(zero & Branch) begin
             progCountout = BranchCalc;
         end
-        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
+        if(jump2) begin
+            $display("jr");
+            #5 progCountout = jr;
+        end
+        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
         #5 progCountin <= progCountout;
     end
 

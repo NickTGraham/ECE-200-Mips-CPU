@@ -13,32 +13,39 @@ always @(inA, inB, control) begin
         5'b00000 : begin
                     result <= inA & inB;
                     zero = 0;
+                    jump = 0;
                   end
         5'b00001 : begin
                     result <= inA | inB;
                     zero = 0;
+                    jump = 0;
                   end
         5'b00010 : begin
                     result = inA + inB;
                     overflow = (inA[15] == inB[15]) ? (result[15] != inA[15]) : 0;
                     zero = 0;
+                    jump = 0;
                   end
         5'b00110 : begin
                     result = inA - inB;
                     overflow = (inA[15] == inB[15]) ? (result[15] != inA[15]) : 0;
                     zero = ~(result[0] | result[1] | result[2] | result[3] | result[4] | result[5] | result[6] | result[7] | result[8] | result[9] | result[10] | result[11] | result[12] | result[13] | result[14] | result[15]);
+                    jump = 0;
                   end
         5'b00111 : begin
                     result <= inA < inB ? 1:0;
                     zero = 0;
+                    jump = 0;
                   end
         5'b01100 : begin
                     result <= ~(inA | inB);
                     zero = 0;
+                    jump = 0;
                   end
         5'b01111 : begin
                   result <= (inA > 0);
                   zero = ~(inA > 0);
+                  jump = 0;
                   end
         5'b10000 : begin
                   temp = (inA*inB);
@@ -46,6 +53,7 @@ always @(inA, inB, control) begin
                   Hi = temp[31:16];
                   Lo = temp[15:0];
                   zero = 0;
+                  jump = 0;
                   end
         5'b10001 : begin
                   temp = inA/inB;
@@ -53,22 +61,27 @@ always @(inA, inB, control) begin
                   Hi = temp[31:16];
                   Lo = temp[15:0];
                   zero = 0;
+                  jump = 0;
                   end
         5'b10010 : begin //High
                   result = Hi;
                   zero = 0;
+                  jump = 0;
                   end
         5'b10011 : begin //Low
                   result = Lo;
                   zero = 0;
+                  jump = 0;
                   end
         5'b10100 : begin //sll
                   result = inB << shamt;
                   zero = 0;
+                  jump = 0;
                   end
         5'b10101 : begin //srl
                   result = inB >> shamt;
                   zero = 0;
+                  jump = 0;
                   end
         5'b10111 : begin //jr
                   result = 0;
@@ -79,6 +92,7 @@ always @(inA, inB, control) begin
         default : begin
                     result <= 16'bX;
                     zero = 0;
+                    jump = 0;
                   end
     endcase
 end
