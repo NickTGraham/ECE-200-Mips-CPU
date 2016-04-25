@@ -1,7 +1,7 @@
-module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, Jump);
+module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, Jump, Jal);
     //TODO: Double check the Opcodes
     input[5:0] Opcode;
-    output RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, Jump;
+    output RegDst, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite, Jump, Jal;
     output[1:0] ALUOp;
 
     reg RegDst, Branch, MemtoReg, ALUSrc, RegWrite, Jump;
@@ -30,6 +30,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 2;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b100011) begin //lw
             RegDst <= 0;
@@ -41,6 +42,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 0;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b101011) begin //sw
             ALUSrc <= 1;
@@ -50,6 +52,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 0;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b000100) begin //beq
             ALUSrc <= 0;
@@ -59,6 +62,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 1;
             ALUOp <= 1;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b000001) begin //bgez
             ALUSrc <= 0;
@@ -68,6 +72,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 1;
             ALUOp <= 3;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b000010) begin //j
             ALUSrc <= 0;
@@ -77,6 +82,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 0;
             Jump <= 1;
+            Jal <= 0;
         end
         else if(Opcode == 6'b001000) begin //addi
             RegDst <= 0;
@@ -88,6 +94,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 3;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b001101) begin //ori
             RegDst <= 0;
@@ -99,6 +106,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 3;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b001100) begin //andi
             RegDst <= 0;
@@ -110,6 +118,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 3;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b001010) begin //slti
             RegDst <= 0;
@@ -121,6 +130,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 3;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b100000) begin //lb
             RegDst <= 0;
@@ -132,6 +142,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 00;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b100001) begin //lh
             RegDst <= 0;
@@ -143,6 +154,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 00;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b101000) begin //sb
             RegDst <= 0;
@@ -154,6 +166,7 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 00;
             Jump <= 0;
+            Jal <= 0;
         end
         else if(Opcode == 6'b101001) begin //sh
             RegDst <= 0;
@@ -165,6 +178,18 @@ module Control(Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSr
             Branch <= 0;
             ALUOp <= 00;
             Jump <= 0;
+            Jal <= 0;
+        end
+        else if(Opcode == 6'b000011) begin //jal
+            RegDst <= 0;
+            MemtoReg <= 0;
+            RegWrite <= 1;
+            MemRead <= 0;
+            MemWrite <= 0;
+            Branch <= 0;
+            ALUOp <= 00;
+            Jump <= 1;
+            Jal <= 1;
         end
     end
 endmodule

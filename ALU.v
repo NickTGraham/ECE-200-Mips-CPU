@@ -1,11 +1,11 @@
-module ALU(inA, inB, control, shamt, result, Hi, Lo, overflow, zero);
+module ALU(inA, inB, control, shamt, result, Hi, Lo, jr, overflow, zero, jump);
     input [15:0] inA, inB;
     input [4:0] control;
     input [4:0] shamt;
     output reg [15:0] result;
-    output reg [15:0] Hi, Lo ;
+    output reg [15:0] Hi, Lo, jr;
     output reg overflow;
-    output reg zero;
+    output reg zero, jump;
     reg temp [31:0];
 
 always @(inA, inB, control) begin
@@ -62,13 +62,19 @@ always @(inA, inB, control) begin
                   result = HiLo[1];
                   zero = 0;
                   end
-        5'b00000 : begin //Low
+        5'b00000 : begin //sll
                   result = inB << shamt;
                   zero = 0;
                   end
-        5'b00010 : begin //Low
+        5'b00010 : begin //srl
                   result = inB >> shamt;
                   zero = 0;
+                  end
+        5'b01000 : begin //jr
+                  result = 0;
+                  zero = 0;
+                  jump = 1;
+                  jr = inA;
                   end
         default : begin
                     result <= 16'bX;
