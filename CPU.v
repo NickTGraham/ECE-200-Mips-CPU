@@ -11,7 +11,7 @@ module CPU();
     reg [31:0] progCountin, progCountout;
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
     reg [28:0] JShift;
-    reg [15:0] ALUB;
+    reg [15:0] ALUB, pcSaver;
     wire [15:0] Hi, Lo, jr;
 
     reg [5:0] i;
@@ -23,6 +23,9 @@ module CPU();
     end
 
     always @(negedge clk) begin
+        if(Jal) begin
+            pcSaver = progCountin[15:0] + 4;
+        end
         #5 i = i + 1;
         progCountout = progCountin + 4; //need to change back to 4!!!
         JAdd [31:28] = progCountout[31:28];
@@ -60,7 +63,7 @@ module CPU();
     ALU Math(RegA, ALUB, ALUcntrl, InstructionWire[10:6], ALUResult, Hi, Lo, jr, overflow, zero, jump2);
     DataMem DM(ALUResult, MemWrite, MemRead, ReadData, RegB, clk);
     mux216 RES (ALUResult, ReadData, MemtoReg, ALUMEM);
-    mux216 RES2 (ALUMEM, progCountin[15:0], Jal, WriteData);
+    mux216 RES2 (ALUMEM, pcSaver, Jal, WriteData);
     Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump, Jal);
     ALUControl AC(ALUOp, InstructionWire[5:0], InstructionWire[31:26], ALUcntrl);
 
