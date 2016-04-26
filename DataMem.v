@@ -1,5 +1,5 @@
 module DataMem (address, write_enable, read_enable, write, read, clk);
-    reg [7:0] data [0:20]; //so no idea how long to really make this, so starting with max
+    reg [7:0] data [0:46]; //so no idea how long to really make this, so starting with max
     input [15:0] address, read;
     input [1:0] write_enable, read_enable;
     input clk;

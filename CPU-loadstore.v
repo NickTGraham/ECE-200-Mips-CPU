@@ -42,7 +42,7 @@ module CPU_ls();
         if(jump2) begin
             #5 progCountout = jr;
         end
-        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
+        $display("PC %d, instruction %b, next PC %d, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
         #5 progCountin <= progCountout;
     end
 
@@ -56,7 +56,7 @@ module CPU_ls();
     end
 
     clock mclk(clk);
-    InstructionMem_ls IM(progCountin[5:0], InstructionWire, clk);
+    InstructionMem_ls IM(progCountin[6:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, tempWA);
     mux25 wr2(tempWA, 5'b01111, Jal, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
