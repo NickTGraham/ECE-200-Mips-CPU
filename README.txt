@@ -1,4 +1,5 @@
 The tests for this are broken into three different modules. They all run the same logic, however they load different instructions in order to test different functions.
+The reason for splitting them is to make it easier to follow what is being tested.
 
 To test all of the basic operations, run the CPU module. Here is what the program does.
 Preexisting data:
@@ -40,3 +41,24 @@ addi r4 = r0 - 4
 add r4 = r4 + r5
 bgez r1 >= 0? jump 1 instructions
 jump to instruction 6
+
+To test all the bonus instructions except for jal run the CPU_ex module.
+
+#addi r4 = r0 + 3
+#addi r5 = r0 + 2
+#mul r4*r5
+#mfhi to r6
+#mflo to r7
+# r8 = r5 << 2
+# r9 = r5 >> 1
+#addi r4 = r0 + 404
+#addi r5 = r0 + 4
+#mul r4*r5
+#mfhi to r6
+#mflo to r7
+#jr to r8 or 8 in this case
+
+To test jal run the CPU_jal module.
+
+#or r3 = r15 or r0
+#jal to the start

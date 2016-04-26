@@ -2,51 +2,72 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
     input [1:0] ALUOp;
     input [5:0] funct;
     input [5:0] Opcode;
-    output [3:0] cntrl;
+    output [4:0] cntrl;
 
-    reg [3:0] cntrl;
+    reg [4:0] cntrl;
 
     always @(ALUOp or funct) begin
         if(ALUOp == 2'b00) begin
-            cntrl <= 4'b0010;
+            cntrl <= 5'b00010;
         end
         else if (ALUOp == 2'b01) begin
-            cntrl <= 4'b0110;
+            cntrl <= 5'b00110;
         end
         else if (ALUOp == 2'b11) begin //handle the immediate instructions, since they have no funct and there are too many, using Opcode
             if(Opcode == 6'b001000) begin //addi
-                cntrl <= 4'b0010;
+                cntrl <= 5'b00010;
             end
             if(Opcode == 6'b001101) begin //ori
-                cntrl <= 4'b0001;
+                cntrl <= 5'b00001;
             end
             if(Opcode == 6'b001100) begin //andi
-                cntrl <= 4'b0000;
+                cntrl <= 5'b00000;
             end
             if(Opcode == 6'b001010) begin //slti
-                cntrl <= 4'b0111;
+                cntrl <= 5'b00111;
             end
-            if(Opcode == 6'b000001) begin //slti
-                cntrl <= 4'b1111;
+            if(Opcode == 6'b000001) begin //bgez
+                cntrl <= 5'b01111;
             end
         end
-        else if(funct[3:0] == 4'b0000) begin
-            cntrl <= 4'b0010;
+        else if(funct == 6'b100000) begin
+            cntrl <= 5'b00010;
         end
-        else if(funct[3:0] == 4'b0010) begin
-            cntrl <= 4'b0110;
+        else if(funct == 6'b100010) begin
+            cntrl <= 5'b00110;
         end
-        else if(funct[3:0] == 4'b0100) begin
-            cntrl <= 4'b0000;
+        else if(funct == 6'b100100) begin
+            cntrl <= 5'b00000;
         end
-        else if(funct[3:0] == 4'b0101) begin
-            cntrl <= 4'b0001;
+        else if(funct == 6'b100101) begin
+            cntrl <= 5'b00001;
         end
-        else if(funct[3:0] == 4'b1010) begin
-            cntrl <= 4'b0111;
+        else if(funct == 6'b101010) begin
+            cntrl <= 5'b00111;
         end
-        else if(funct[3:0] == 4'b0111) begin
-            cntrl <= 4'b1100;
+        else if(funct == 6'b100111) begin
+            cntrl <= 5'b01100;
+        end
+        else if(funct == 6'b011000) begin //mul
+            cntrl <= 5'b10000;
+        end
+        else if(funct == 6'b011010) begin //div
+            cntrl <= 5'b10001;
+        end
+        else if(funct == 6'b010000) begin //mfi
+            cntrl <= 5'b10010;
+        end
+        else if(funct == 6'b010010) begin //mlo
+            cntrl <= 5'b10011;
+        end
+        else if(funct == 6'b000000) begin //sll
+            cntrl <= 5'b10100;
+        end
+        else if(funct == 6'b000010) begin //srl
+            cntrl <= 5'b10101;
+        end
+        else if(funct == 6'b001000) begin //jr
+            cntrl <= 5'b10111;
         end
     end
 

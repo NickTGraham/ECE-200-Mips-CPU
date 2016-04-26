@@ -1,4 +1,4 @@
-module InstructionMem_jb (read_address, out, clk);
+module InstructionMem_jal (read_address, out, clk);
     reg [7:0] instructions [0:64]; //so no idea how long to really make this, so starting with 32 instructions
     input [5:0] read_address;
     output [31:0] out;
@@ -11,7 +11,7 @@ module InstructionMem_jb (read_address, out, clk);
     assign out = temp;
 
     initial begin
-        $readmemb ("jbTestinstr.txt",instructions);
+        $readmemb ("jal.txt",instructions);
     end
 
     always @(posedge clk )

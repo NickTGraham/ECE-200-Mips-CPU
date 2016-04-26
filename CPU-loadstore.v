@@ -1,17 +1,18 @@
 module CPU_ls();
 
-    wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc;
+    wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc, Jal, jump2;
     wire [1:0] ALUOp, MemRead, MemWrite;
-    wire [3:0] ALUcntrl;
+    wire [4:0] ALUcntrl;
     wire [31:0] InstructionWire;
     wire [15:0] ImmediateData;
-    wire [15:0] RegA, RegB, ALUA, ALUResult, ReadData, WriteData;
-    wire [4:0] write_address;
+    wire [15:0] RegA, RegB, ALUA, ALUResult, ReadData, WriteData, ALUMEM;
+    wire [4:0] write_address, tempWA;
 
     reg [31:0] progCountin, progCountout;
     reg [31:0] PCp4, JAdd, BranchCalc, BranchShift;
     reg [28:0] JShift;
-    reg [15:0] ALUB;
+    reg [15:0] ALUB, pcSaver;
+    wire [15:0] Hi, Lo, jr;
 
     reg [5:0] i;
 
@@ -22,6 +23,9 @@ module CPU_ls();
     end
 
     always @(negedge clk) begin
+        if(Jal) begin
+            pcSaver = progCountin[15:0] + 4;
+        end
         #5 i = i + 1;
         progCountout = progCountin + 4; //need to change back to 4!!!
         JAdd [31:28] = progCountout[31:28];
@@ -35,7 +39,10 @@ module CPU_ls();
         if(zero & Branch) begin
             progCountout = BranchCalc;
         end
-        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
+        if(jump2) begin
+            #5 progCountout = jr;
+        end
+        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
         #5 progCountin <= progCountout;
     end
 
@@ -50,12 +57,14 @@ module CPU_ls();
 
     clock mclk(clk);
     InstructionMem_ls IM(progCountin[5:0], InstructionWire, clk);
-    mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, write_address);
+    mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, tempWA);
+    mux25 wr2(tempWA, 5'b01111, Jal, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
-    ALU Math(RegA, ALUB, ALUcntrl, ALUResult, overflow, zero);
+    ALU Math(RegA, ALUB, ALUcntrl, InstructionWire[10:6], ALUResult, Hi, Lo, jr, overflow, zero, jump2);
     DataMem DM(ALUResult, MemWrite, MemRead, ReadData, RegB, clk);
-    mux216 RES (ALUResult, ReadData, MemtoReg, WriteData);
-    Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump);
+    mux216 RES (ALUResult, ReadData, MemtoReg, ALUMEM);
+    mux216 RES2 (ALUMEM, pcSaver, Jal, WriteData);
+    Control MC(InstructionWire[31:26], RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, jump, Jal);
     ALUControl AC(ALUOp, InstructionWire[5:0], InstructionWire[31:26], ALUcntrl);
 
 endmodule

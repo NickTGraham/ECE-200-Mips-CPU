@@ -1,4 +1,4 @@
-module CPU_jb();
+module CPU_jal();
 
     wire clk, RegDst, Branch, MemtoReg, RegWrite, overflow, zero, jump, ALUSrc, Jal, jump2;
     wire [1:0] ALUOp, MemRead, MemWrite;
@@ -42,7 +42,7 @@ module CPU_jb();
         if(jump2) begin
             #5 progCountout = jr;
         end
-        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[4:0], ALUResult, i, $time);
+        $display("PC %d, instruction %b, next PC %b, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
         #5 progCountin <= progCountout;
     end
 
@@ -56,7 +56,7 @@ module CPU_jb();
     end
 
     clock mclk(clk);
-    InstructionMem_jb IM(progCountin[5:0], InstructionWire, clk);
+    InstructionMem_jal IM(progCountin[5:0], InstructionWire, clk);
     mux25 wr(InstructionWire[20:16], InstructionWire[15:11], RegDst, tempWA);
     mux25 wr2(tempWA, 5'b01111, Jal, write_address);
     regfile RF(InstructionWire[25:21], InstructionWire[20:16], write_address, RegWrite, WriteData, RegA, RegB, clk);
