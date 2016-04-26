@@ -43,8 +43,8 @@ always @(inA, inB, control) begin
                     jump = 0;
                   end
         5'b01111 : begin
-                  result <= (inA > 0);
-                  zero = ~(inA > 0);
+                  result <= ((inA > 0) | (inA == 0));
+                  zero = ((inA > 0) | (inA == 0));
                   jump = 0;
                   end
         5'b10000 : begin

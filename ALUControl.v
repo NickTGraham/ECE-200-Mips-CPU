@@ -26,7 +26,7 @@ module ALUControl(ALUOp, funct, Opcode, cntrl);
             if(Opcode == 6'b001010) begin //slti
                 cntrl <= 5'b00111;
             end
-            if(Opcode == 6'b000001) begin //slti
+            if(Opcode == 6'b000001) begin //bgez
                 cntrl <= 5'b01111;
             end
         end

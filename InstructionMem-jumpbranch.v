@@ -1,5 +1,5 @@
 module InstructionMem_jb (read_address, out, clk);
-    reg [7:0] instructions [0:50]; //so no idea how long to really make this, so starting with 32 instructions
+    reg [7:0] instructions [0:64]; //so no idea how long to really make this, so starting with 32 instructions
     input [5:0] read_address;
     output [31:0] out;
     input clk;
