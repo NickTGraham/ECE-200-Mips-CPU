@@ -42,7 +42,7 @@ module CPU_ex();
         if(jump2) begin
             #5 progCountout = jr;
         end
-        $display("PC %d, instruction %b, next PC %b, ALU Result %d, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
+        $display("PC %d, instruction %b, next PC %d, ALU Result %b, number %d", progCountin[5:0], InstructionWire, progCountout[5:0], ALUResult, i, $time);
         #5 progCountin <= progCountout;
     end
 

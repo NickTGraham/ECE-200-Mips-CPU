@@ -62,3 +62,7 @@ To test jal run the CPU_jal module.
 
 #or r3 = r15 or r0
 #jal to the start
+
+To test the factorial program run the CPU_fact module.
+
+The output is printed out as the ALU Result of the last instruction. Due to only being able to have 16 bits the output is 1001110110000000, which if taken as the unsinged value is the result we desire. The upper 16 bits, which are not shown are all 0.
