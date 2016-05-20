@@ -1,3 +1,5 @@
+Project by Nick Graham and Nancy Vargus
+
 The tests for this are broken into three different modules. They all run the same logic, however they load different instructions in order to test different functions.
 The reason for splitting them is to make it easier to follow what is being tested.
 
